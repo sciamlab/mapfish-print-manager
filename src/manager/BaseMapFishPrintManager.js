@@ -118,7 +118,7 @@ export class BaseMapFishPrintManager extends Observable {
    *
    * @type {string}
    */
-  maskColor = 'rgba(130, 130, 130, 0.5)';
+  maskColor = 'rgba(130, 130, 130, 1)';
 
   /**
    * Custom options to apply to the transform interaction. See
