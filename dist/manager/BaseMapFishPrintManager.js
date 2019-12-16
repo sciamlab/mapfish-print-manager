@@ -296,7 +296,7 @@ function (_Observable) {
 
     _defineProperty(_assertThisInitialized(_this), "extentLayer", null);
 
-    _defineProperty(_assertThisInitialized(_this), "maskColor", 'rgba(130, 130, 130, 1)');
+    _defineProperty(_assertThisInitialized(_this), "maskColor", 'rgba(118,133,148,0.8)');
 
     _defineProperty(_assertThisInitialized(_this), "transformOpts", {});
 
@@ -686,8 +686,8 @@ function (_Observable) {
         'm': 39.37
       };
       return {
-        width: printMapSize.width / 72 / inchesPerUnit[mapUnits] * printScale,
-        height: printMapSize.height / 72 / inchesPerUnit[mapUnits] * printScale
+        width: printMapSize.width / 96 / inchesPerUnit[mapUnits] * printScale,
+        height: printMapSize.height / 96 / inchesPerUnit[mapUnits] * printScale
       };
     }
     /**

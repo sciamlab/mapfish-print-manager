@@ -118,7 +118,7 @@ export class BaseMapFishPrintManager extends Observable {
    *
    * @type {string}
    */
-  maskColor = 'rgba(130, 130, 130, 1)';
+  maskColor = 'rgba(118,133,148,0.8)';
 
   /**
    * Custom options to apply to the transform interaction. See
@@ -573,8 +573,8 @@ export class BaseMapFishPrintManager extends Observable {
       'm': 39.37
     };
     return {
-      width: printMapSize.width / 72 / inchesPerUnit[mapUnits] * printScale,
-      height: printMapSize.height / 72 / inchesPerUnit[mapUnits] * printScale
+      width: printMapSize.width / 96 / inchesPerUnit[mapUnits] * printScale,
+      height: printMapSize.height / 96 / inchesPerUnit[mapUnits] * printScale
     };
   }
 
