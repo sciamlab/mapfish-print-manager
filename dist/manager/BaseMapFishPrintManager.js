@@ -777,18 +777,10 @@ function (_Observable) {
   }, {
     key: "serializeLegend",
     value: function serializeLegend(layer) {
-      /*if(layer.get('legend')){
-        return {
-          name: layer.get('name'),
-          icons: layer.get('legend')
-        };
-      }*/
       if (layer.getSource() instanceof _TileWMS["default"] || layer.getSource() instanceof _ImageWMS["default"]) {
         return {
           name: layer.get('name') || layer.getSource().getParams().LAYERS || '',
-          icons: [layer.Style[0].LegendURL[0].OnlineResource]
-          /*icons: [Shared.getLegendGraphicUrl(layer)]*/
-
+          icons: [_Shared["default"].getLegendGraphicUrl(layer)]
         };
       }
     }

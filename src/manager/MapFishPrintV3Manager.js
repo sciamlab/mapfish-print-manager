@@ -12,6 +12,8 @@ import MapFishPrintV3XYZSerializer from '../serializer/MapFishPrintV3XYZSerializ
 import Shared from '../util/Shared';
 import Logger from '../util/Logger';
 import scales from '../config/scales';
+import OlSourceTileWMS from "ol/source/TileWMS";
+import OlSourceImageWMS from "ol/source/ImageWMS";
 
 /**
  * The MapFishPrintV3Manager.
@@ -418,7 +420,7 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
     const mapProjection = mapView.getProjection();
     const mapLayers = Shared.getMapLayers(this.map);
     const extentFeatureGeometry = this._extentFeature.getGeometry();
-
+    let r = new RegExp('^(?:[a-z]+:)?//', 'i');
     let serializedLayers;
     if(!this.customMapParams.layers || !this.customMapParams.layers.length){
       serializedLayers = mapLayers
@@ -431,7 +433,7 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
           }
           return acc;
         }, []).reverse();
-      let r = new RegExp('^(?:[a-z]+:)?//', 'i');
+
       serializedLayers.forEach(l => {
         if(!(r.test(l.baseURL))){
           l.baseURL=this.host+l.baseURL;
@@ -452,6 +454,13 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
           }
           return acc;
         }, []).reverse();
+      /*serializedLegends.forEach(l => {
+        l.icons.forEach(url => {
+          if(!(r.test(url))){
+            url=this.host+url;
+          }
+        });
+      });*/
     }else{
       serializedLegends = this.customParams.legend.classes;
     }
@@ -607,6 +616,44 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
     this._dpi = dpi;
 
     this.dispatch('change:dpi', dpi);
+  }
+  /**
+   * Serializes/encodes the legend payload for the given layer.
+   *
+   * @param {ol.layer.Layer} layer The layer to serialize/encode the legend for.
+   *
+   * @return {Object} The serialized/encoded legend.
+   */
+  serializeLegend(layer) {
+    let r = new RegExp('^(?:[a-z]+:)?//', 'i');
+    let legends=layer.get('legend');
+    if(legends){
+      if(Array.isArray(legends)){
+        legends=legends.reduce((acc, leg) => {
+          if (leg.url) {
+            if (!(r.test(leg.url))) {
+              leg.url= this.host + leg.url;
+            }
+            acc.push(leg.url);
+          }
+          return acc;
+        }, []);
+        return {
+          name: layer.get('name'),
+          icons:legends
+        };
+      }else{
+        let l_url=layer.get('legend');
+        if (!(r.test(l_url))) {
+          l_url= this.host + l_url;
+        }
+        return {
+          name: layer.get('name'),
+          icons:[ l_url]
+        };
+      }
+    }
+    return super.serializeLegend(layer);
   }
 }
 

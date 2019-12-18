@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = exports.MapFishPrintV3Manager = void 0;
 
-var _get = _interopRequireDefault(require("lodash/get"));
+var _get2 = _interopRequireDefault(require("lodash/get"));
 
 var _extent = require("ol/extent");
 
@@ -27,6 +27,10 @@ var _Logger = _interopRequireDefault(require("../util/Logger"));
 
 var _scales = _interopRequireDefault(require("../config/scales"));
 
+var _TileWMS = _interopRequireDefault(require("ol/source/TileWMS"));
+
+var _ImageWMS = _interopRequireDefault(require("ol/source/ImageWMS"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -43,9 +47,13 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
+
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -540,6 +548,7 @@ function (_BaseMapFishPrintMana) {
 
       var extentFeatureGeometry = this._extentFeature.getGeometry();
 
+      var r = new RegExp('^(?:[a-z]+:)?//', 'i');
       var serializedLayers;
 
       if (!this.customMapParams.layers || !this.customMapParams.layers.length) {
@@ -554,7 +563,6 @@ function (_BaseMapFishPrintMana) {
 
           return acc;
         }, []).reverse();
-        var r = new RegExp('^(?:[a-z]+:)?//', 'i');
         serializedLayers.forEach(function (l) {
           if (!r.test(l.baseURL)) {
             l.baseURL = _this8.host + l.baseURL;
@@ -576,6 +584,13 @@ function (_BaseMapFishPrintMana) {
 
           return acc;
         }, []).reverse();
+        /*serializedLegends.forEach(l => {
+          l.icons.forEach(url => {
+            if(!(r.test(url))){
+              url=this.host+url;
+            }
+          });
+        });*/
       } else {
         serializedLegends = this.customParams.legend.classes;
       }
@@ -676,7 +691,7 @@ function (_BaseMapFishPrintMana) {
 
       this._layout = layout;
       var mapAttribute = this.getAttributeByName('map');
-      this._dpis = (0, _get["default"])(mapAttribute, 'clientInfo.dpiSuggestions'); // set some defaults if not provided via capabilities
+      this._dpis = (0, _get2["default"])(mapAttribute, 'clientInfo.dpiSuggestions'); // set some defaults if not provided via capabilities
 
       if (!this._dpis) {
         this._dpis = [72, 150];
@@ -684,8 +699,8 @@ function (_BaseMapFishPrintMana) {
 
       this.setDpi(this.getDpis()[0]);
       this.setPrintMapSize({
-        width: (0, _get["default"])(mapAttribute, 'clientInfo.width'),
-        height: (0, _get["default"])(mapAttribute, 'clientInfo.height')
+        width: (0, _get2["default"])(mapAttribute, 'clientInfo.width'),
+        height: (0, _get2["default"])(mapAttribute, 'clientInfo.height')
       });
       this.updatePrintExtent();
       this.dispatch('change:layout', layout);
@@ -698,6 +713,55 @@ function (_BaseMapFishPrintMana) {
      * @param {string} printAppName The name of the application to use.
      */
 
+  }, {
+    key: "serializeLegend",
+
+    /**
+     * Serializes/encodes the legend payload for the given layer.
+     *
+     * @param {ol.layer.Layer} layer The layer to serialize/encode the legend for.
+     *
+     * @return {Object} The serialized/encoded legend.
+     */
+    value: function serializeLegend(layer) {
+      var _this9 = this;
+
+      var r = new RegExp('^(?:[a-z]+:)?//', 'i');
+      var legends = layer.get('legend');
+
+      if (legends) {
+        if (Array.isArray(legends)) {
+          legends = legends.reduce(function (acc, leg) {
+            if (leg.url) {
+              if (!r.test(leg.url)) {
+                leg.url = _this9.host + leg.url;
+              }
+
+              acc.push(leg.url);
+            }
+
+            return acc;
+          }, []);
+          return {
+            name: layer.get('name'),
+            icons: legends
+          };
+        } else {
+          var l_url = layer.get('legend');
+
+          if (!r.test(l_url)) {
+            l_url = this.host + l_url;
+          }
+
+          return {
+            name: layer.get('name'),
+            icons: [l_url]
+          };
+        }
+      }
+
+      return _get(_getPrototypeOf(MapFishPrintV3Manager.prototype), "serializeLegend", this).call(this, layer);
+    }
   }]);
 
   return MapFishPrintV3Manager;

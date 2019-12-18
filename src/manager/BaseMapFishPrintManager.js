@@ -654,18 +654,11 @@ export class BaseMapFishPrintManager extends Observable {
    * @return {Object} The serialized/encoded legend.
    */
   serializeLegend(layer) {
-    /*if(layer.get('legend')){
-      return {
-        name: layer.get('name'),
-        icons: layer.get('legend')
-      };
-    }*/
     if (layer.getSource() instanceof OlSourceTileWMS ||
       layer.getSource() instanceof OlSourceImageWMS) {
       return {
         name: layer.get('name') || layer.getSource().getParams().LAYERS || '',
-        icons: [layer.Style[0].LegendURL[0].OnlineResource]
-        /*icons: [Shared.getLegendGraphicUrl(layer)]*/
+        icons: [Shared.getLegendGraphicUrl(layer)]
       };
     }
   }
