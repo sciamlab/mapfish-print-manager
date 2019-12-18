@@ -314,7 +314,7 @@ function (_Observable) {
 
     _defineProperty(_assertThisInitialized(_this), "customPrintScales", []);
 
-    _defineProperty(_assertThisInitialized(_this), "timeout", 5000);
+    _defineProperty(_assertThisInitialized(_this), "timeout", 15000);
 
     _defineProperty(_assertThisInitialized(_this), "_layouts", []);
 
@@ -468,7 +468,6 @@ function (_Observable) {
       var B = this.map.getPixelFromCoordinate(coords[4]);
       var C = this.map.getPixelFromCoordinate(coords[3]);
       var D = this.map.getPixelFromCoordinate(coords[2]);
-      console.log(coords);
       console.log([A, D, C, B]);
       ctx.fillStyle = this.maskColor;
       ctx.beginPath();

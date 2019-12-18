@@ -127,11 +127,11 @@ function (_OlInteractionPointer) {
     _defineProperty(_assertThisInitialized(_this), "setDefaultStyle", function () {
       // Style
       var stroke = new _Stroke["default"]({
-        color: 'rgba(255, 0, 0, 1)',
+        color: 'rgba(0,102,204,1)',
         width: 1
       });
       var strokedash = new _Stroke["default"]({
-        color: 'rgba(255, 0, 0, 1)',
+        color: 'rgba(0,102,204,1)',
         width: 1,
         lineDash: [4, 4]
       });

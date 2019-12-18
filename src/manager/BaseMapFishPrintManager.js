@@ -160,7 +160,7 @@ export class BaseMapFishPrintManager extends Observable {
    *
    * @type {number}
    */
-  timeout = 5000;
+  timeout = 15000;
 
   /**
    * The supported layouts by the print service.
@@ -362,7 +362,6 @@ export class BaseMapFishPrintManager extends Observable {
     const C = this.map.getPixelFromCoordinate(coords[3]);
     const D = this.map.getPixelFromCoordinate(coords[2]);
 
-    console.log(coords);
     console.log([A,D,C,B]);
 
     ctx.fillStyle = this.maskColor;

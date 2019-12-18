@@ -12,8 +12,7 @@ import MapFishPrintV3XYZSerializer from '../serializer/MapFishPrintV3XYZSerializ
 import Shared from '../util/Shared';
 import Logger from '../util/Logger';
 import scales from '../config/scales';
-import OlSourceTileWMS from "ol/source/TileWMS";
-import OlSourceImageWMS from "ol/source/ImageWMS";
+
 
 /**
  * The MapFishPrintV3Manager.
@@ -426,7 +425,6 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
       serializedLayers = mapLayers
         .filter(this.filterPrintableLayer.bind(this))
         .reduce((acc, layer) => {
-          console.log(layer);
           const serializedLayer = this.serializeLayer(layer);
           if (serializedLayer) {
             acc.push(serializedLayer);
@@ -442,7 +440,6 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
     }else{
       serializedLayers=this.customMapParams.layers;
     }
-
     let serializedLegends;
     if(!(this.customParams.legend && this.customParams.legend.classes)) {
       serializedLegends = mapLayers
@@ -454,13 +451,6 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
           }
           return acc;
         }, []).reverse();
-      /*serializedLegends.forEach(l => {
-        l.icons.forEach(url => {
-          if(!(r.test(url))){
-            url=this.host+url;
-          }
-        });
-      });*/
     }else{
       serializedLegends = this.customParams.legend.classes;
     }

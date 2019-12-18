@@ -27,10 +27,6 @@ var _Logger = _interopRequireDefault(require("../util/Logger"));
 
 var _scales = _interopRequireDefault(require("../config/scales"));
 
-var _TileWMS = _interopRequireDefault(require("ol/source/TileWMS"));
-
-var _ImageWMS = _interopRequireDefault(require("ol/source/ImageWMS"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -553,8 +549,6 @@ function (_BaseMapFishPrintMana) {
 
       if (!this.customMapParams.layers || !this.customMapParams.layers.length) {
         serializedLayers = mapLayers.filter(this.filterPrintableLayer.bind(this)).reduce(function (acc, layer) {
-          console.log(layer);
-
           var serializedLayer = _this8.serializeLayer(layer);
 
           if (serializedLayer) {
@@ -584,13 +578,6 @@ function (_BaseMapFishPrintMana) {
 
           return acc;
         }, []).reverse();
-        /*serializedLegends.forEach(l => {
-          l.icons.forEach(url => {
-            if(!(r.test(url))){
-              url=this.host+url;
-            }
-          });
-        });*/
       } else {
         serializedLegends = this.customParams.legend.classes;
       }
