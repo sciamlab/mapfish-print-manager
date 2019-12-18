@@ -34,7 +34,7 @@ function () {
 
     _defineProperty(this, "validateSource", function (source) {
       var isValidSource = _this.constructor.sourceCls.some(function (cls) {
-        return source instanceof cls;
+        return source.constructor.name === cls.name;
       });
 
       if (!isValidSource) {

@@ -1,4 +1,5 @@
-import OlMap from 'ol/Map';
+import Map from 'ol/Map';
+import OlLayer from 'ol/layer/Layer';
 import OlLayerVector from 'ol/layer/Vector';
 import OlSourceTileWMS from 'ol/source/TileWMS';
 import OlSourceImageWMS from 'ol/source/ImageWMS';
@@ -64,6 +65,7 @@ export class BaseMapFishPrintManager extends Observable {
    */
   url = null;
 
+  host= '';
   /**
    * The capabilities of the print service. Either filled automatically out of
    * the the given print service or given manually.
@@ -118,7 +120,7 @@ export class BaseMapFishPrintManager extends Observable {
    *
    * @type {string}
    */
-  maskColor = 'rgba(118,133,148,0.8)';
+  maskColor = 'rgba(118,133,148,1)';
 
   /**
    * Custom options to apply to the transform interaction. See
@@ -257,7 +259,7 @@ export class BaseMapFishPrintManager extends Observable {
 
     Object.assign(this, ...opts);
 
-    if (!(this.map instanceof OlMap)) {
+    if (!(this.map.constructor.name === Map.prototype.className)) {
       Logger.warn('Invalid value given to config option `map`. You need to ' +
         'provide an ol.Map to use the PrintManager.');
     }
@@ -280,6 +282,7 @@ export class BaseMapFishPrintManager extends Observable {
     const layerCandidates = Shared.getLayersByName(this.map,
       this.constructor.EXTENT_LAYER_NAME);
 
+    console.log(layerCandidates);
     layerCandidates.forEach(layer => this.map.removeLayer(layer));
 
     // Remove transform interaction from map.
@@ -315,13 +318,13 @@ export class BaseMapFishPrintManager extends Observable {
         source: new OlSourceVector(),
         style: new OlStyleStyle({
           fill: new OlStyleFill({
-            color: 'rgba(255, 255, 130, 0)'
+            color: 'rgba(0,102,204,0.2)'
           })
         })
       });
 
-      extentLayer.on('precompose', this.onExtentLayerPreCompose.bind(this));
-      extentLayer.on('postcompose', this.onExtentLayerPostCompose.bind(this));
+     /* extentLayer.on('precompose', this.onExtentLayerPreCompose.bind(this));
+      extentLayer.on('postcompose', this.onExtentLayerPostCompose.bind(this));*/
 
       this.extentLayer = extentLayer;
 
@@ -358,6 +361,9 @@ export class BaseMapFishPrintManager extends Observable {
     const B = this.map.getPixelFromCoordinate(coords[4]);
     const C = this.map.getPixelFromCoordinate(coords[3]);
     const D = this.map.getPixelFromCoordinate(coords[2]);
+
+    console.log(coords);
+    console.log([A,D,C,B]);
 
     ctx.fillStyle = this.maskColor;
 
@@ -553,7 +559,6 @@ export class BaseMapFishPrintManager extends Observable {
       center[0] + (width / 2),
       center[1] + (height / 2)
     ];
-
     return printExtent;
   }
 
@@ -573,8 +578,8 @@ export class BaseMapFishPrintManager extends Observable {
       'm': 39.37
     };
     return {
-      width: printMapSize.width / 96 / inchesPerUnit[mapUnits] * printScale,
-      height: printMapSize.height / 96 / inchesPerUnit[mapUnits] * printScale
+      width: printMapSize.width / 72 / inchesPerUnit[mapUnits] * printScale,
+      height: printMapSize.height / 72 / inchesPerUnit[mapUnits] * printScale
     };
   }
 
@@ -624,9 +629,9 @@ export class BaseMapFishPrintManager extends Observable {
   serializeLayer(layer) {
     const viewResolution = this.map.getView().getResolution();
     const layerSource = layer.getSource();
-
     const serializerCand = this.serializers.find(serializer => {
-      return serializer.sourceCls.some(cls => layerSource instanceof cls);
+      return serializer.sourceCls.some(cls => {
+        return layerSource.constructor.name === cls.name});
     });
 
     if (serializerCand) {
@@ -649,11 +654,18 @@ export class BaseMapFishPrintManager extends Observable {
    * @return {Object} The serialized/encoded legend.
    */
   serializeLegend(layer) {
+    /*if(layer.get('legend')){
+      return {
+        name: layer.get('name'),
+        icons: layer.get('legend')
+      };
+    }*/
     if (layer.getSource() instanceof OlSourceTileWMS ||
       layer.getSource() instanceof OlSourceImageWMS) {
       return {
         name: layer.get('name') || layer.getSource().getParams().LAYERS || '',
-        icons: [Shared.getLegendGraphicUrl(layer)]
+        icons: [layer.Style[0].LegendURL[0].OnlineResource]
+        /*icons: [Shared.getLegendGraphicUrl(layer)]*/
       };
     }
   }

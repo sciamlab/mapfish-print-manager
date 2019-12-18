@@ -8,6 +8,7 @@ import MapFishPrintV3GeoJsonSerializer from '../serializer/MapFishPrintV3GeoJson
 import MapFishPrintV3OSMSerializer from '../serializer/MapFishPrintV3OSMSerializer';
 import MapFishPrintV3TiledWMSSerializer from '../serializer/MapFishPrintV3TiledWMSSerializer';
 import MapFishPrintV3WMSSerializer from '../serializer/MapFishPrintV3WMSSerializer';
+import MapFishPrintV3XYZSerializer from '../serializer/MapFishPrintV3XYZSerializer';
 import Shared from '../util/Shared';
 import Logger from '../util/Logger';
 import scales from '../config/scales';
@@ -44,6 +45,7 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
     MapFishPrintV3OSMSerializer,
     MapFishPrintV3TiledWMSSerializer,
     MapFishPrintV3WMSSerializer,
+    MapFishPrintV3XYZSerializer
   ];
 
   /**
@@ -102,6 +104,33 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
    * @private
    */
   _printJobReference = null;
+
+
+  /**
+   * ID of currently started print job. Will be used while polling will be
+   * performed.
+   *
+   * @type {string}
+   * @private
+   */
+  _reportName = 'report';
+
+  /**
+   * Override layer from config
+   *
+   * @type {Array}
+   * @private
+   */
+  customLayers = [];
+
+  /**
+   * Override legend from config
+   *
+   * @type {Array}
+   * @private
+   */
+  customLegends = [];
+
 
   /**
    * The constructor
@@ -256,7 +285,7 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
 
     const payload = this.getPrintPayload();
 
-    const createPrintJobUrl = `${this.url}${this.getPrintApp()}/report.${this.getOutputFormat()}`;
+    const createPrintJobUrl = `${this.url}${this.getPrintApp()}/${this.getReportName()}.${this.getOutputFormat()}`;
 
     return fetch(createPrintJobUrl, {
       method: 'POST',
@@ -390,25 +419,45 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
     const mapLayers = Shared.getMapLayers(this.map);
     const extentFeatureGeometry = this._extentFeature.getGeometry();
 
-    const serializedLayers = mapLayers
-      .filter(this.filterPrintableLayer.bind(this))
-      .reduce((acc, layer) => {
-        const serializedLayer = this.serializeLayer(layer);
-        if (serializedLayer) {
-          acc.push(serializedLayer);
+    let serializedLayers;
+    if(!this.customMapParams.layers || !this.customMapParams.layers.length){
+      serializedLayers = mapLayers
+        .filter(this.filterPrintableLayer.bind(this))
+        .reduce((acc, layer) => {
+          console.log(layer);
+          const serializedLayer = this.serializeLayer(layer);
+          if (serializedLayer) {
+            acc.push(serializedLayer);
+          }
+          return acc;
+        }, []).reverse();
+      let r = new RegExp('^(?:[a-z]+:)?//', 'i');
+      serializedLayers.forEach(l => {
+        if(!(r.test(l.baseURL))){
+          l.baseURL=this.host+l.baseURL;
         }
-        return acc;
-      }, []).reverse();
+      });
+    }else{
+      serializedLayers=this.customMapParams.layers;
+    }
 
-    const serializedLegends = mapLayers
-      .filter(this.filterPrintableLegend.bind(this))
-      .reduce((acc, layer) => {
-        const serializedLegend = this.serializeLegend(layer);
-        if (serializedLegend) {
-          acc.push(serializedLegend);
-        }
-        return acc;
-      }, []).reverse();
+    let serializedLegends;
+    if(!(this.customParams.legend && this.customParams.legend.classes)) {
+      serializedLegends = mapLayers
+        .filter(this.filterPrintableLegend.bind(this))
+        .reduce((acc, layer) => {
+          const serializedLegend = this.serializeLegend(layer);
+          if (serializedLegend) {
+            acc.push(serializedLegend);
+          }
+          return acc;
+        }, []).reverse();
+    }else{
+      serializedLegends = this.customParams.legend.classes;
+    }
+
+    let customMapP=Object.assign({},this.customMapParams);
+    delete customMapP.layers;
 
     const payload = {
       layout: this.getLayout().name,
@@ -420,7 +469,7 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
           projection: mapProjection.getCode(),
           rotation: this.calculateRotation() || 0,
           scale: this.getScale(),
-          ...this.customMapParams
+          ... customMapP
         },
         legend: {
           classes: serializedLegends
@@ -449,6 +498,7 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
     this._printApps = printApps;
   }
 
+
   /**
    * Returns the currently selected print application.
    *
@@ -456,6 +506,25 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
    */
   getPrintApp() {
     return this._printApp;
+  }
+
+
+  /**
+   * Returns report filename.
+   *
+   * @return {string} The currently namefile.
+   */
+  getReportName() {
+    return this._reportName;
+  }
+
+  /**
+   * Sets the supported print applications.
+   *
+   * @param {string} reportName The name of the report file.
+   */
+  setReportName(reportName) {
+    this._reportName = reportName;
   }
 
   /**

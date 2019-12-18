@@ -7,6 +7,8 @@ exports["default"] = exports.BaseMapFishPrintManager = void 0;
 
 var _Map = _interopRequireDefault(require("ol/Map"));
 
+var _Layer = _interopRequireDefault(require("ol/layer/Layer"));
+
 var _Vector = _interopRequireDefault(require("ol/layer/Vector"));
 
 var _TileWMS = _interopRequireDefault(require("ol/source/TileWMS"));
@@ -284,6 +286,8 @@ function (_Observable) {
 
     _defineProperty(_assertThisInitialized(_this), "url", null);
 
+    _defineProperty(_assertThisInitialized(_this), "host", '');
+
     _defineProperty(_assertThisInitialized(_this), "capabilities", null);
 
     _defineProperty(_assertThisInitialized(_this), "method", 'POST');
@@ -296,7 +300,7 @@ function (_Observable) {
 
     _defineProperty(_assertThisInitialized(_this), "extentLayer", null);
 
-    _defineProperty(_assertThisInitialized(_this), "maskColor", 'rgba(118,133,148,0.8)');
+    _defineProperty(_assertThisInitialized(_this), "maskColor", 'rgba(118,133,148,1)');
 
     _defineProperty(_assertThisInitialized(_this), "transformOpts", {});
 
@@ -352,7 +356,7 @@ function (_Observable) {
 
     Object.assign.apply(Object, [_assertThisInitialized(_this)].concat(_toConsumableArray(opts)));
 
-    if (!(_this.map instanceof _Map["default"])) {
+    if (!(_this.map.constructor.name === _Map["default"].prototype.className)) {
       _Logger["default"].warn('Invalid value given to config option `map`. You need to ' + 'provide an ol.Map to use the PrintManager.');
     }
 
@@ -379,6 +383,7 @@ function (_Observable) {
       // Remove print layer from map. But only if not given by user.
       var layerCandidates = _Shared["default"].getLayersByName(this.map, this.constructor.EXTENT_LAYER_NAME);
 
+      console.log(layerCandidates);
       layerCandidates.forEach(function (layer) {
         return _this2.map.removeLayer(layer);
       }); // Remove transform interaction from map.
@@ -419,12 +424,13 @@ function (_Observable) {
           source: new _Vector2["default"](),
           style: new _Style["default"]({
             fill: new _Fill["default"]({
-              color: 'rgba(255, 255, 130, 0)'
+              color: 'rgba(0,102,204,0.2)'
             })
           })
         });
-        extentLayer.on('precompose', this.onExtentLayerPreCompose.bind(this));
-        extentLayer.on('postcompose', this.onExtentLayerPostCompose.bind(this));
+        /* extentLayer.on('precompose', this.onExtentLayerPreCompose.bind(this));
+         extentLayer.on('postcompose', this.onExtentLayerPostCompose.bind(this));*/
+
         this.extentLayer = extentLayer;
 
         if (_Shared["default"].getLayersByName(this.map, this.constructor.EXTENT_LAYER_NAME).length === 0) {
@@ -462,6 +468,8 @@ function (_Observable) {
       var B = this.map.getPixelFromCoordinate(coords[4]);
       var C = this.map.getPixelFromCoordinate(coords[3]);
       var D = this.map.getPixelFromCoordinate(coords[2]);
+      console.log(coords);
+      console.log([A, D, C, B]);
       ctx.fillStyle = this.maskColor;
       ctx.beginPath();
       ctx.moveTo(0, 0);
@@ -686,8 +694,8 @@ function (_Observable) {
         'm': 39.37
       };
       return {
-        width: printMapSize.width / 96 / inchesPerUnit[mapUnits] * printScale,
-        height: printMapSize.height / 96 / inchesPerUnit[mapUnits] * printScale
+        width: printMapSize.width / 72 / inchesPerUnit[mapUnits] * printScale,
+        height: printMapSize.height / 72 / inchesPerUnit[mapUnits] * printScale
       };
     }
     /**
@@ -747,7 +755,7 @@ function (_Observable) {
       var layerSource = layer.getSource();
       var serializerCand = this.serializers.find(function (serializer) {
         return serializer.sourceCls.some(function (cls) {
-          return layerSource instanceof cls;
+          return layerSource.constructor.name === cls.name;
         });
       });
 
@@ -769,10 +777,18 @@ function (_Observable) {
   }, {
     key: "serializeLegend",
     value: function serializeLegend(layer) {
+      /*if(layer.get('legend')){
+        return {
+          name: layer.get('name'),
+          icons: layer.get('legend')
+        };
+      }*/
       if (layer.getSource() instanceof _TileWMS["default"] || layer.getSource() instanceof _ImageWMS["default"]) {
         return {
           name: layer.get('name') || layer.getSource().getParams().LAYERS || '',
-          icons: [_Shared["default"].getLegendGraphicUrl(layer)]
+          icons: [layer.Style[0].LegendURL[0].OnlineResource]
+          /*icons: [Shared.getLegendGraphicUrl(layer)]*/
+
         };
       }
     }

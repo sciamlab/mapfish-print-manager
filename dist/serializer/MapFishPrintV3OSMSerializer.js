@@ -87,15 +87,23 @@ function (_BaseSerializer) {
     value: function serialize(layer) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       (0, _defaultsDeep["default"])(opts, {
-        baseURL: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        baseURL: 'http://tiles.wmflabs.org/bw-mapnik/',
+
+        /*baseURL: 'https://tile.openstreetmap.org/',*/
+
+        /*baseURL: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',*/
         customParams: {},
-        dpi: 72,
-        failOnError: false,
+
+        /*      dpi: 72,*/
+
+        /*      failOnError: false,*/
         imageExtension: 'png',
-        maxExtent: [-20037508.34, -20037508.34, 20037508.34, 20037508.34],
-        rasterStyle: undefined,
-        resolutionTolerance: 0,
-        resolutions: [],
+
+        /*      maxExtent: [-20037508.34, -20037508.34, 20037508.34, 20037508.34],*/
+
+        /*      rasterStyle: undefined,*/
+
+        /*      resolutionTolerance: 0,*/
         tileSize: [256, 256]
       });
       var source = layer.getSource();

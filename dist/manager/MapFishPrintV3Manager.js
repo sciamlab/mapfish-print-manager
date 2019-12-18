@@ -19,6 +19,8 @@ var _MapFishPrintV3TiledWMSSerializer = _interopRequireDefault(require("../seria
 
 var _MapFishPrintV3WMSSerializer = _interopRequireDefault(require("../serializer/MapFishPrintV3WMSSerializer"));
 
+var _MapFishPrintV3XYZSerializer = _interopRequireDefault(require("../serializer/MapFishPrintV3XYZSerializer"));
+
 var _Shared = _interopRequireDefault(require("../util/Shared"));
 
 var _Logger = _interopRequireDefault(require("../util/Logger"));
@@ -134,6 +136,28 @@ function (_BaseMapFishPrintMana) {
    */
 
   /**
+   * ID of currently started print job. Will be used while polling will be
+   * performed.
+   *
+   * @type {string}
+   * @private
+   */
+
+  /**
+   * Override layer from config
+   *
+   * @type {Array}
+   * @private
+   */
+
+  /**
+   * Override legend from config
+   *
+   * @type {Array}
+   * @private
+   */
+
+  /**
    * The constructor
    */
   function MapFishPrintV3Manager() {
@@ -143,7 +167,7 @@ function (_BaseMapFishPrintMana) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(MapFishPrintV3Manager).call(this, arguments));
 
-    _defineProperty(_assertThisInitialized(_this), "serializers", [_MapFishPrintV3GeoJsonSerializer["default"], _MapFishPrintV3OSMSerializer["default"], _MapFishPrintV3TiledWMSSerializer["default"], _MapFishPrintV3WMSSerializer["default"]]);
+    _defineProperty(_assertThisInitialized(_this), "serializers", [_MapFishPrintV3GeoJsonSerializer["default"], _MapFishPrintV3OSMSerializer["default"], _MapFishPrintV3TiledWMSSerializer["default"], _MapFishPrintV3WMSSerializer["default"], _MapFishPrintV3XYZSerializer["default"]]);
 
     _defineProperty(_assertThisInitialized(_this), "customMapParams", {});
 
@@ -152,6 +176,12 @@ function (_BaseMapFishPrintMana) {
     _defineProperty(_assertThisInitialized(_this), "_printApp", {});
 
     _defineProperty(_assertThisInitialized(_this), "_printJobReference", null);
+
+    _defineProperty(_assertThisInitialized(_this), "_reportName", 'report');
+
+    _defineProperty(_assertThisInitialized(_this), "customLayers", []);
+
+    _defineProperty(_assertThisInitialized(_this), "customLegends", []);
 
     _defineProperty(_assertThisInitialized(_this), "setPrintApp", function (printAppName) {
       var printApp = _this.getPrintApps().find(function (pa) {
@@ -364,7 +394,7 @@ function (_BaseMapFishPrintMana) {
       }
 
       var payload = this.getPrintPayload();
-      var createPrintJobUrl = "".concat(this.url).concat(this.getPrintApp(), "/report.").concat(this.getOutputFormat());
+      var createPrintJobUrl = "".concat(this.url).concat(this.getPrintApp(), "/").concat(this.getReportName(), ".").concat(this.getOutputFormat());
       return fetch(createPrintJobUrl, {
         method: 'POST',
         headers: _objectSpread({
@@ -510,24 +540,48 @@ function (_BaseMapFishPrintMana) {
 
       var extentFeatureGeometry = this._extentFeature.getGeometry();
 
-      var serializedLayers = mapLayers.filter(this.filterPrintableLayer.bind(this)).reduce(function (acc, layer) {
-        var serializedLayer = _this8.serializeLayer(layer);
+      var serializedLayers;
 
-        if (serializedLayer) {
-          acc.push(serializedLayer);
-        }
+      if (!this.customMapParams.layers || !this.customMapParams.layers.length) {
+        serializedLayers = mapLayers.filter(this.filterPrintableLayer.bind(this)).reduce(function (acc, layer) {
+          console.log(layer);
 
-        return acc;
-      }, []).reverse();
-      var serializedLegends = mapLayers.filter(this.filterPrintableLegend.bind(this)).reduce(function (acc, layer) {
-        var serializedLegend = _this8.serializeLegend(layer);
+          var serializedLayer = _this8.serializeLayer(layer);
 
-        if (serializedLegend) {
-          acc.push(serializedLegend);
-        }
+          if (serializedLayer) {
+            acc.push(serializedLayer);
+          }
 
-        return acc;
-      }, []).reverse();
+          return acc;
+        }, []).reverse();
+        var r = new RegExp('^(?:[a-z]+:)?//', 'i');
+        serializedLayers.forEach(function (l) {
+          if (!r.test(l.baseURL)) {
+            l.baseURL = _this8.host + l.baseURL;
+          }
+        });
+      } else {
+        serializedLayers = this.customMapParams.layers;
+      }
+
+      var serializedLegends;
+
+      if (!(this.customParams.legend && this.customParams.legend.classes)) {
+        serializedLegends = mapLayers.filter(this.filterPrintableLegend.bind(this)).reduce(function (acc, layer) {
+          var serializedLegend = _this8.serializeLegend(layer);
+
+          if (serializedLegend) {
+            acc.push(serializedLegend);
+          }
+
+          return acc;
+        }, []).reverse();
+      } else {
+        serializedLegends = this.customParams.legend.classes;
+      }
+
+      var customMapP = Object.assign({}, this.customMapParams);
+      delete customMapP.layers;
       var payload = {
         layout: this.getLayout().name,
         attributes: _objectSpread({
@@ -538,7 +592,7 @@ function (_BaseMapFishPrintMana) {
             projection: mapProjection.getCode(),
             rotation: this.calculateRotation() || 0,
             scale: this.getScale()
-          }, this.customMapParams),
+          }, customMapP),
           legend: {
             classes: serializedLegends
           }
@@ -578,6 +632,28 @@ function (_BaseMapFishPrintMana) {
     key: "getPrintApp",
     value: function getPrintApp() {
       return this._printApp;
+    }
+    /**
+     * Returns report filename.
+     *
+     * @return {string} The currently namefile.
+     */
+
+  }, {
+    key: "getReportName",
+    value: function getReportName() {
+      return this._reportName;
+    }
+    /**
+     * Sets the supported print applications.
+     *
+     * @param {string} reportName The name of the report file.
+     */
+
+  }, {
+    key: "setReportName",
+    value: function setReportName(reportName) {
+      this._reportName = reportName;
     }
     /**
      * Sets the layout to use. Updates the print extent accordingly.

@@ -1,22 +1,22 @@
-import OlSourceImageWMS from 'ol/source/ImageWMS';
+import OlSourceXYZ from 'ol/source/XYZ';
 
 import defaultsDeep from 'lodash/defaultsDeep';
 
 import BaseSerializer from './BaseSerializer';
 
 /**
- * The MapFishPrintV3WMSSerializer.
+ * The MapFishPrintV3OSMSerializer.
  *
  * @class
  */
-export class MapFishPrintV3WMSSerializer extends BaseSerializer {
+export class MapFishPrintV3XYZSerializer extends BaseSerializer {
 
   /**
    * The WMS layer type identificator.
    *
    * @type {string}
    */
-  static TYPE_WMS = 'wms';
+  static TYPE_OSM = 'xyz';
 
   /**
    * The ol sources this serializer is capable of serializing.
@@ -24,7 +24,7 @@ export class MapFishPrintV3WMSSerializer extends BaseSerializer {
    * @type {Array}
    */
   static sourceCls = [
-    OlSourceImageWMS
+    OlSourceXYZ
   ];
 
   /**
@@ -45,13 +45,9 @@ export class MapFishPrintV3WMSSerializer extends BaseSerializer {
    */
   serialize(layer, opts = {}) {
     defaultsDeep(opts, {
-      failOnError: false,
-      mergeableParams: [],
-      method: 'GET',
-      rasterStyle: undefined,
-      // One of MAPSERVER, GEOSERVER, QGISSERVER
-      serverType: undefined,
-      useNativeAngle: false
+      customParams: {},
+      imageExtension: 'png',
+      tileSize: [256, 256]
     });
 
     const source = layer.getSource();
@@ -60,36 +56,13 @@ export class MapFishPrintV3WMSSerializer extends BaseSerializer {
       return;
     }
 
-    const layers = source.getParams().LAYERS;
-    const layersArray = layers ? layers.split(',') : [''];
-    const styles = source.getParams().STYLES;
-    const stylesArray = styles ? styles.split(',') : [''];
-
-    const {
-      LAYERS,
-      STYLES,
-      VERSION,
-      WIDTH,
-      HEIGHT,
-      FORMAT,
-      BBOX,
-      CRS,
-      SRS,
-      ...customParams
-    } = source.getParams();
-
     const serialized = {
       ...super.serialize(layer, opts),
       ...{
-        baseURL: source instanceof OlSourceImageWMS ? source.getUrl() : source.getUrls()[0],
-        customParams,
-        imageFormat: source.getParams().FORMAT || 'image/png',
-        layers: layersArray,
         name: layer.get('name'),
+        baseURL: source.getUrls()[0],
         opacity: layer.getOpacity(),
-        styles: stylesArray,
-        version: source.getParams().VERSION || '1.3.0',
-        type: this.constructor.TYPE_WMS
+        type: 'osm'
       },
       ...opts
     };
@@ -98,4 +71,4 @@ export class MapFishPrintV3WMSSerializer extends BaseSerializer {
   }
 }
 
-export default MapFishPrintV3WMSSerializer;
+export default MapFishPrintV3XYZSerializer;

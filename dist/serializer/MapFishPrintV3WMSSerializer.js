@@ -130,7 +130,7 @@ function (_BaseSerializer) {
         name: layer.get('name'),
         opacity: layer.getOpacity(),
         styles: stylesArray,
-        version: source.getParams().VERSION || '1.1.0',
+        version: source.getParams().VERSION || '1.3.0',
         type: this.constructor.TYPE_WMS
       }, {}, opts);
 

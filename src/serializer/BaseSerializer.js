@@ -49,7 +49,7 @@ export class BaseSerializer {
    */
   validateSource = source => {
     const isValidSource = this.constructor.sourceCls.some(cls => {
-      return (source instanceof cls);
+      return (source.constructor.name === cls.name);
     });
 
     if (!isValidSource) {
