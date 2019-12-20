@@ -397,6 +397,7 @@ function (_BaseMapFishPrintMana) {
         return;
       }
 
+      console.log('test print');
       var payload = this.getPrintPayload();
       var createPrintJobUrl = "".concat(this.url).concat(this.getPrintApp(), "/").concat(this.getReportName(), ".").concat(this.getOutputFormat());
       return fetch(createPrintJobUrl, {

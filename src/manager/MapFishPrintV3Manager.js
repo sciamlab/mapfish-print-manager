@@ -283,7 +283,7 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
       Logger.warn('The manager hasn\'t been initiated yet. Please call init() first.');
       return;
     }
-
+console.log('test print');
     const payload = this.getPrintPayload();
 
     const createPrintJobUrl = `${this.url}${this.getPrintApp()}/${this.getReportName()}.${this.getOutputFormat()}`;
