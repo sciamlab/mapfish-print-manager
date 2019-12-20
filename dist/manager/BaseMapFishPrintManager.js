@@ -314,7 +314,7 @@ function (_Observable) {
 
     _defineProperty(_assertThisInitialized(_this), "customPrintScales", []);
 
-    _defineProperty(_assertThisInitialized(_this), "timeout", 15000);
+    _defineProperty(_assertThisInitialized(_this), "timeout", 16000);
 
     _defineProperty(_assertThisInitialized(_this), "_layouts", []);
 

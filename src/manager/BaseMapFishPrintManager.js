@@ -160,7 +160,7 @@ export class BaseMapFishPrintManager extends Observable {
    *
    * @type {number}
    */
-  timeout = 15000;
+  timeout = 16000;
 
   /**
    * The supported layouts by the print service.
