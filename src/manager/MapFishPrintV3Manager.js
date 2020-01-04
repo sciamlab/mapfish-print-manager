@@ -617,7 +617,8 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
     let r = new RegExp('^(?:[a-z]+:)?//', 'i');
 
     if(layer.hasOwnProperty('getLayerLegend')){
-      let l_url=layer.getLayerLegend();
+      console.log('legenda da funzione');
+      let l_url=layer.getLayerLegend(this.map.getView().getResolution());
       if (!(r.test(l_url))) {
         l_url= this.host + l_url;
       }
