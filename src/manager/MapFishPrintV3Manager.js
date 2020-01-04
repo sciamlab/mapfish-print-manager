@@ -283,7 +283,6 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
       Logger.warn('The manager hasn\'t been initiated yet. Please call init() first.');
       return;
     }
-console.log('test print');
     const payload = this.getPrintPayload();
 
     const createPrintJobUrl = `${this.url}${this.getPrintApp()}/${this.getReportName()}.${this.getOutputFormat()}`;
@@ -616,6 +615,18 @@ console.log('test print');
    */
   serializeLegend(layer) {
     let r = new RegExp('^(?:[a-z]+:)?//', 'i');
+
+    if(layer.hasOwnProperty('getLayerLegend')){
+      let l_url=layer.getLayerLegend();
+      if (!(r.test(l_url))) {
+        l_url= this.host + l_url;
+      }
+      return {
+        name: layer.get('name'),
+        icons:[ l_url]
+      };
+    }
+
     let legends=layer.get('legend');
     if(legends){
       if(Array.isArray(legends)){

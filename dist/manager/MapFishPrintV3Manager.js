@@ -397,7 +397,6 @@ function (_BaseMapFishPrintMana) {
         return;
       }
 
-      console.log('test print');
       var payload = this.getPrintPayload();
       var createPrintJobUrl = "".concat(this.url).concat(this.getPrintApp(), "/").concat(this.getReportName(), ".").concat(this.getOutputFormat());
       return fetch(createPrintJobUrl, {
@@ -715,6 +714,20 @@ function (_BaseMapFishPrintMana) {
       var _this9 = this;
 
       var r = new RegExp('^(?:[a-z]+:)?//', 'i');
+
+      if (layer.hasOwnProperty('getLayerLegend')) {
+        var l_url = layer.getLayerLegend();
+
+        if (!r.test(l_url)) {
+          l_url = this.host + l_url;
+        }
+
+        return {
+          name: layer.get('name'),
+          icons: [l_url]
+        };
+      }
+
       var legends = layer.get('legend');
 
       if (legends) {
@@ -735,15 +748,15 @@ function (_BaseMapFishPrintMana) {
             icons: legends
           };
         } else {
-          var l_url = layer.get('legend');
+          var _l_url = layer.get('legend');
 
-          if (!r.test(l_url)) {
-            l_url = this.host + l_url;
+          if (!r.test(_l_url)) {
+            _l_url = this.host + _l_url;
           }
 
           return {
             name: layer.get('name'),
-            icons: [l_url]
+            icons: [_l_url]
           };
         }
       }
