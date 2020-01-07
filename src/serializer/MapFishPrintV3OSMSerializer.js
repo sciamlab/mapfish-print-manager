@@ -1,4 +1,4 @@
-import OlSourceOSM from 'ol/source/OSM';
+import OSM from 'ol/source/OSM';
 
 import defaultsDeep from 'lodash/defaultsDeep';
 
@@ -24,7 +24,7 @@ export class MapFishPrintV3OSMSerializer extends BaseSerializer {
    * @type {Array}
    */
   static sourceCls = [
-    OlSourceOSM
+    OSM
   ];
 
   /**

@@ -604,6 +604,7 @@ export class BaseMapFishPrintManager extends Observable {
    * @return {boolean} Whether the layer should be printed or not.
    */
   filterPrintableLayer(layer) {
+    console.log(layer);
     return layer !== this.extentLayer && layer.getVisible() && this.layerFilter(layer);
   }
 
@@ -626,13 +627,14 @@ export class BaseMapFishPrintManager extends Observable {
    * @return {Object} The serialized/encoded layer.
    */
   serializeLayer(layer) {
+
     const viewResolution = this.map.getView().getResolution();
     const layerSource = layer.getSource();
+
     const serializerCand = this.serializers.find(serializer => {
       return serializer.sourceCls.some(cls => {
         return layerSource.constructor.name === cls.name});
     });
-
     if (serializerCand) {
       const serializer = new serializerCand();
       return serializer.serialize(layer, layer.get(

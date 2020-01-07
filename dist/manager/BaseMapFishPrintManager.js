@@ -724,6 +724,7 @@ function (_Observable) {
   }, {
     key: "filterPrintableLayer",
     value: function filterPrintableLayer(layer) {
+      console.log(layer);
       return layer !== this.extentLayer && layer.getVisible() && this.layerFilter(layer);
     }
     /**
