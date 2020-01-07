@@ -383,7 +383,6 @@ function (_Observable) {
       // Remove print layer from map. But only if not given by user.
       var layerCandidates = _Shared["default"].getLayersByName(this.map, this.constructor.EXTENT_LAYER_NAME);
 
-      console.log(layerCandidates);
       layerCandidates.forEach(function (layer) {
         return _this2.map.removeLayer(layer);
       }); // Remove transform interaction from map.
@@ -724,7 +723,6 @@ function (_Observable) {
   }, {
     key: "filterPrintableLayer",
     value: function filterPrintableLayer(layer) {
-      console.log(layer);
       return layer !== this.extentLayer && layer.getVisible() && this.layerFilter(layer);
     }
     /**

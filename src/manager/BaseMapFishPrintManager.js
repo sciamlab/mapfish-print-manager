@@ -282,7 +282,6 @@ export class BaseMapFishPrintManager extends Observable {
     const layerCandidates = Shared.getLayersByName(this.map,
       this.constructor.EXTENT_LAYER_NAME);
 
-    console.log(layerCandidates);
     layerCandidates.forEach(layer => this.map.removeLayer(layer));
 
     // Remove transform interaction from map.
@@ -604,7 +603,6 @@ export class BaseMapFishPrintManager extends Observable {
    * @return {boolean} Whether the layer should be printed or not.
    */
   filterPrintableLayer(layer) {
-    console.log(layer);
     return layer !== this.extentLayer && layer.getVisible() && this.layerFilter(layer);
   }
 

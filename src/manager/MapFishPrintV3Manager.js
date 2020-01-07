@@ -279,12 +279,10 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
    * @return {Promise}
    */
   print(forceDownload) {
-    console.log('provo');
     if (!(this.isInitiated())) {
       Logger.warn('The manager hasn\'t been initiated yet. Please call init() first.');
       return;
     }
-    console.log('start manager print');
     const payload = this.getPrintPayload();
     const createPrintJobUrl = `${this.url}${this.getPrintApp()}/${this.getReportName()}.${this.getOutputFormat()}`;
     return fetch(createPrintJobUrl, {
@@ -303,7 +301,6 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
           ref,
           statusURL
         } = json;
-        console.log('3');
         // get absolute url of print status and download to ensure we will be
         // redirected correctly while printing
         const matches = this.url.match(/[^/](\/[^/].*)/);
@@ -617,7 +614,7 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
     let r = new RegExp('^(?:[a-z]+:)?//', 'i');
 
     if(layer.hasOwnProperty('getLayerLegend')){
-      console.log('legenda da funzione');
+
       let l_url=layer.getLayerLegend(this.map.getView().getResolution());
       if (!(r.test(l_url))) {
         l_url= this.host + l_url;

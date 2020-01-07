@@ -391,15 +391,12 @@ function (_BaseMapFishPrintMana) {
     value: function print(forceDownload) {
       var _this5 = this;
 
-      console.log('provo');
-
       if (!this.isInitiated()) {
         _Logger["default"].warn('The manager hasn\'t been initiated yet. Please call init() first.');
 
         return;
       }
 
-      console.log('start manager print');
       var payload = this.getPrintPayload();
       var createPrintJobUrl = "".concat(this.url).concat(this.getPrintApp(), "/").concat(this.getReportName(), ".").concat(this.getOutputFormat());
       return fetch(createPrintJobUrl, {
@@ -415,8 +412,7 @@ function (_BaseMapFishPrintMana) {
         return response.json();
       }).then(function (json) {
         var ref = json.ref,
-            statusURL = json.statusURL;
-        console.log('3'); // get absolute url of print status and download to ensure we will be
+            statusURL = json.statusURL; // get absolute url of print status and download to ensure we will be
         // redirected correctly while printing
 
         var matches = _this5.url.match(/[^/](\/[^/].*)/);
@@ -721,7 +717,6 @@ function (_BaseMapFishPrintMana) {
       var r = new RegExp('^(?:[a-z]+:)?//', 'i');
 
       if (layer.hasOwnProperty('getLayerLegend')) {
-        console.log('legenda da funzione');
         var l_url = layer.getLayerLegend(this.map.getView().getResolution());
 
         if (!r.test(l_url)) {
