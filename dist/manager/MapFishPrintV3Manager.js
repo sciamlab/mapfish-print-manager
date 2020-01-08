@@ -587,7 +587,10 @@ function (_BaseMapFishPrintMana) {
       var payload;
 
       if (this.customMapParams.zoomToFeatures && this.customParams.extentLayer) {
-        if (this.serializeLegend(this.customParams.extentLayer)) {
+        console.log(this.customParams.extentLayer);
+
+        if (this.serializeLayer(this.customParams.extentLayer)) {
+          console.log('forse sto dentro');
           serializedLayers.push(serializedLegend);
         }
 
@@ -595,7 +598,6 @@ function (_BaseMapFishPrintMana) {
           layout: this.getLayout().name,
           attributes: _objectSpread({
             map: _objectSpread({
-              zoomToFeatures: this.customMapParams.zoomToFeatures,
               dpi: this.getDpi(),
               layers: serializedLayers,
               projection: mapProjection.getCode(),

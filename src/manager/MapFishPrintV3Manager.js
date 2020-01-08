@@ -455,20 +455,21 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
     delete customMapP.layers;
     let payload;
     if(this.customMapParams.zoomToFeatures && this.customParams.extentLayer){
-      if ( this.serializeLegend(this.customParams.extentLayer)) {
+      console.log(this.customParams.extentLayer);
+      if ( this.serializeLayer(this.customParams.extentLayer)) {
+        console.log('forse sto dentro');
         serializedLayers.push(serializedLegend);
       }
       payload = {
         layout: this.getLayout().name,
         attributes: {
           map: {
-            zoomToFeatures: this.customMapParams.zoomToFeatures,
             dpi: this.getDpi(),
             layers: serializedLayers,
             projection: mapProjection.getCode(),
             rotation: this.calculateRotation() || 0,
             scale: this.getScale(),
-            ... customMapP
+            ...customMapP
           },
           legend: {
             classes: serializedLegends
