@@ -587,13 +587,13 @@ function (_BaseMapFishPrintMana) {
       var payload;
 
       if (this.customMapParams.zoomToFeatures && this.customParams.extentLayer) {
-        console.log(this.customParams.extentLayer);
+        var sl = this.serializeLayer(this.customParams.extentLayer);
 
-        if (this.serializeLayer(this.customParams.extentLayer)) {
-          console.log('forse sto dentro');
-          serializedLayers.push(serializedLegend);
+        if (sl) {
+          serializedLayers.push(sl);
         }
 
+        delete this.customParams.extentLayer;
         payload = {
           layout: this.getLayout().name,
           attributes: _objectSpread({
@@ -694,6 +694,7 @@ function (_BaseMapFishPrintMana) {
   }, {
     key: "setLayout",
     value: function setLayout(name) {
+      console.log(this.getLayouts());
       var layout = this.getLayouts().find(function (layout) {
         return layout.name === name;
       });

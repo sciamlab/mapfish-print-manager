@@ -450,16 +450,16 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
       serializedLegends = this.customParams.legend.classes;
     }
 
-
     let customMapP=Object.assign({},this.customMapParams);
     delete customMapP.layers;
     let payload;
+
     if(this.customMapParams.zoomToFeatures && this.customParams.extentLayer){
-      console.log(this.customParams.extentLayer);
-      if ( this.serializeLayer(this.customParams.extentLayer)) {
-        console.log('forse sto dentro');
-        serializedLayers.push(serializedLegend);
+      const sl=this.serializeLayer(this.customParams.extentLayer);
+      if (sl) {
+        serializedLayers.push(sl);
       }
+      delete this.customParams.extentLayer;
       payload = {
         layout: this.getLayout().name,
         attributes: {
@@ -554,6 +554,7 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
    * @param {string} name The name of the layout to use.
    */
   setLayout(name) {
+    console.log(this.getLayouts());
     const layout = this.getLayouts().find(layout => layout.name === name);
 
     if (!layout) {
