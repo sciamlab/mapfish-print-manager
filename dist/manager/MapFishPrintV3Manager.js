@@ -586,8 +586,8 @@ function (_BaseMapFishPrintMana) {
       delete customMapP.layers;
       var payload;
 
-      if (customMapParams.zoomToFeatures && customParams.extentLayer) {
-        if (this.serializeLegend(customParams.extentLayer)) {
+      if (this.customMapParams.zoomToFeatures && this.customParams.extentLayer) {
+        if (this.serializeLegend(this.customParams.extentLayer)) {
           serializedLayers.push(serializedLegend);
         }
 
@@ -595,7 +595,7 @@ function (_BaseMapFishPrintMana) {
           layout: this.getLayout().name,
           attributes: _objectSpread({
             map: _objectSpread({
-              zoomToFeatures: customMapParams.zoomToFeatures,
+              zoomToFeatures: this.customMapParams.zoomToFeatures,
               dpi: this.getDpi(),
               layers: serializedLayers,
               projection: mapProjection.getCode(),

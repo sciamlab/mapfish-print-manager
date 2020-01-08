@@ -454,15 +454,15 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
     let customMapP=Object.assign({},this.customMapParams);
     delete customMapP.layers;
     let payload;
-    if(customMapParams.zoomToFeatures && customParams.extentLayer){
-      if ( this.serializeLegend(customParams.extentLayer)) {
+    if(this.customMapParams.zoomToFeatures && this.customParams.extentLayer){
+      if ( this.serializeLegend(this.customParams.extentLayer)) {
         serializedLayers.push(serializedLegend);
       }
       payload = {
         layout: this.getLayout().name,
         attributes: {
           map: {
-            zoomToFeatures: customMapParams.zoomToFeatures,
+            zoomToFeatures: this.customMapParams.zoomToFeatures,
             dpi: this.getDpi(),
             layers: serializedLayers,
             projection: mapProjection.getCode(),
