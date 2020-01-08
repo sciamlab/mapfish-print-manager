@@ -322,8 +322,8 @@ export class BaseMapFishPrintManager extends Observable {
         })
       });
 
-     /* extentLayer.on('precompose', this.onExtentLayerPreCompose.bind(this));
-      extentLayer.on('postcompose', this.onExtentLayerPostCompose.bind(this));*/
+     /*extentLayer.on('prerender', this.onExtentLayerPreRender.bind(this));
+      extentLayer.on('postrender', this.onExtentLayerPostRender.bind(this));*/
 
       this.extentLayer = extentLayer;
 
@@ -335,11 +335,11 @@ export class BaseMapFishPrintManager extends Observable {
   }
 
   /**
-   * Called on the extentLayer's `precompose` event.
+   * Called on the extentLayer's `prerender` event.
    *
    * @param {ol.render.Event} olEvt The ol render event.
    */
-  onExtentLayerPreCompose(olEvt) {
+  onExtentLayerPreRender(olEvt) {
     const ctx = olEvt.context;
     ctx.save();
   }
@@ -349,7 +349,7 @@ export class BaseMapFishPrintManager extends Observable {
    *
    * @param {ol.render.Event} olEvt The ol render event.
    */
-  onExtentLayerPostCompose(olEvt) {
+  onExtentLayerPostRender(olEvt) {
     const ctx = olEvt.context;
     const canvas = ctx.canvas;
     const width = canvas.width;

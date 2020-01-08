@@ -427,8 +427,8 @@ function (_Observable) {
             })
           })
         });
-        /* extentLayer.on('precompose', this.onExtentLayerPreCompose.bind(this));
-         extentLayer.on('postcompose', this.onExtentLayerPostCompose.bind(this));*/
+        /*extentLayer.on('prerender', this.onExtentLayerPreRender.bind(this));
+         extentLayer.on('postrender', this.onExtentLayerPostRender.bind(this));*/
 
         this.extentLayer = extentLayer;
 
@@ -438,14 +438,14 @@ function (_Observable) {
       }
     }
     /**
-     * Called on the extentLayer's `precompose` event.
+     * Called on the extentLayer's `prerender` event.
      *
      * @param {ol.render.Event} olEvt The ol render event.
      */
 
   }, {
-    key: "onExtentLayerPreCompose",
-    value: function onExtentLayerPreCompose(olEvt) {
+    key: "onExtentLayerPreRender",
+    value: function onExtentLayerPreRender(olEvt) {
       var ctx = olEvt.context;
       ctx.save();
     }
@@ -456,8 +456,8 @@ function (_Observable) {
      */
 
   }, {
-    key: "onExtentLayerPostCompose",
-    value: function onExtentLayerPostCompose(olEvt) {
+    key: "onExtentLayerPostRender",
+    value: function onExtentLayerPostRender(olEvt) {
       var ctx = olEvt.context;
       var canvas = ctx.canvas;
       var width = canvas.width;

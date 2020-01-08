@@ -237,7 +237,6 @@ function (_BaseSerializer) {
         rotateWithView: olCircleStyle.getRotateWithView(),
         rotation: olCircleStyle.getRotation(),
         scale: olCircleStyle.getScale(),
-        snapToPixel: olCircleStyle.getSnapToPixel(),
         stroke: _this.writeStrokeStyle(olCircleStyle.getStroke())
       };
     });
@@ -259,7 +258,6 @@ function (_BaseSerializer) {
         rotation: olIconStyle.getRotation(),
         scale: olIconStyle.getScale(),
         size: olIconStyle.getSize(),
-        snapToPixel: olIconStyle.getSnapToPixel(),
         src: olIconStyle.getSrc()
       };
     });
@@ -279,7 +277,6 @@ function (_BaseSerializer) {
         rotateWithView: olRegularShape.getRotateWithView(),
         rotation: olRegularShape.getRotation(),
         scale: olRegularShape.getScale(),
-        snapToPixel: olRegularShape.getSnapToPixel(),
         stroke: _this.writeStrokeStyle(olRegularShape.getStroke())
       };
     });
