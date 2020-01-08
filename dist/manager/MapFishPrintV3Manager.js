@@ -566,16 +566,6 @@ function (_BaseMapFishPrintMana) {
         serializedLayers = this.customMapParams.layers;
       }
 
-      if (this.customParams.mergelayers) {
-        this.customParams.mergelayers.map(function (layer) {
-          var serializedLayer = _this8.serializeLayer(layer);
-
-          if (serializedLayer) {
-            serializedLayers.push(serializedLayer);
-          }
-        });
-      }
-
       var serializedLegends;
 
       if (!(this.customParams.legend && this.customParams.legend.classes)) {
@@ -594,22 +584,48 @@ function (_BaseMapFishPrintMana) {
 
       var customMapP = Object.assign({}, this.customMapParams);
       delete customMapP.layers;
-      var payload = {
-        layout: this.getLayout().name,
-        attributes: _objectSpread({
-          map: _objectSpread({
-            center: (0, _extent.getCenter)(extentFeatureGeometry.getExtent()),
-            dpi: this.getDpi(),
-            layers: serializedLayers,
-            projection: mapProjection.getCode(),
-            rotation: this.calculateRotation() || 0,
-            scale: this.getScale()
-          }, customMapP),
-          legend: {
-            classes: serializedLegends
-          }
-        }, this.customParams)
-      };
+      var payload;
+
+      if (customMapParams.zoomToFeatures && customParams.extentLayer) {
+        if (this.serializeLegend(customParams.extentLayer)) {
+          serializedLayers.push(serializedLegend);
+        }
+
+        payload = {
+          layout: this.getLayout().name,
+          attributes: _objectSpread({
+            map: _objectSpread({
+              zoomToFeatures: customMapParams.zoomToFeatures,
+              dpi: this.getDpi(),
+              layers: serializedLayers,
+              projection: mapProjection.getCode(),
+              rotation: this.calculateRotation() || 0,
+              scale: this.getScale()
+            }, customMapP),
+            legend: {
+              classes: serializedLegends
+            }
+          }, this.customParams)
+        };
+      } else {
+        payload = {
+          layout: this.getLayout().name,
+          attributes: _objectSpread({
+            map: _objectSpread({
+              center: (0, _extent.getCenter)(extentFeatureGeometry.getExtent()),
+              dpi: this.getDpi(),
+              layers: serializedLayers,
+              projection: mapProjection.getCode(),
+              rotation: this.calculateRotation() || 0,
+              scale: this.getScale()
+            }, customMapP),
+            legend: {
+              classes: serializedLegends
+            }
+          }, this.customParams)
+        };
+      }
+
       return payload;
     }
     /**

@@ -178,6 +178,7 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
     // mapfish3 doesn't provide scales via capabilities, so we get them from
     // initialized manager if set or set some most common used values here
     // manually as fallback
+
     if (this.customPrintScales.length > 0) {
       this._scales = this.customPrintScales;
     } else {
@@ -434,14 +435,6 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
     }else{
       serializedLayers=this.customMapParams.layers;
     }
-    if(this.customParams.mergelayers){
-      this.customParams.mergelayers.map(layer=>{
-        const serializedLayer = this.serializeLayer(layer);
-        if (serializedLayer) {
-          serializedLayers.push(serializedLayer);
-        }
-      });
-    }
     let serializedLegends;
     if(!(this.customParams.legend && this.customParams.legend.classes)) {
       serializedLegends = mapLayers
@@ -460,25 +453,49 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
 
     let customMapP=Object.assign({},this.customMapParams);
     delete customMapP.layers;
-
-    const payload = {
-      layout: this.getLayout().name,
-      attributes: {
-        map: {
-          center: getCenter(extentFeatureGeometry.getExtent()),
-          dpi: this.getDpi(),
-          layers: serializedLayers,
-          projection: mapProjection.getCode(),
-          rotation: this.calculateRotation() || 0,
-          scale: this.getScale(),
-          ... customMapP
-        },
-        legend: {
-          classes: serializedLegends
-        },
-        ...this.customParams
+    let payload;
+    if(customMapParams.zoomToFeatures && customParams.extentLayer){
+      if ( this.serializeLegend(customParams.extentLayer)) {
+        serializedLayers.push(serializedLegend);
       }
-    };
+      payload = {
+        layout: this.getLayout().name,
+        attributes: {
+          map: {
+            zoomToFeatures: customMapParams.zoomToFeatures,
+            dpi: this.getDpi(),
+            layers: serializedLayers,
+            projection: mapProjection.getCode(),
+            rotation: this.calculateRotation() || 0,
+            scale: this.getScale(),
+            ... customMapP
+          },
+          legend: {
+            classes: serializedLegends
+          },
+          ...this.customParams
+        }
+      };
+    }else{
+      payload = {
+        layout: this.getLayout().name,
+        attributes: {
+          map: {
+            center: getCenter(extentFeatureGeometry.getExtent()),
+            dpi: this.getDpi(),
+            layers: serializedLayers,
+            projection: mapProjection.getCode(),
+            rotation: this.calculateRotation() || 0,
+            scale: this.getScale(),
+            ... customMapP
+          },
+          legend: {
+            classes: serializedLegends
+          },
+          ...this.customParams
+        }
+      };
+    }
 
     return payload;
   }
