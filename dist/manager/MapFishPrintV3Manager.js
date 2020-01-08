@@ -428,7 +428,6 @@ function (_BaseMapFishPrintMana) {
         _this5._printJobReference = ref;
         return _this5.pollUntilDone.call(_this5, baseHost + statusURL, 1000, _this5.timeout).then(function (downloadUrl) {
           _this5._printJobReference = null;
-          console.log('4');
 
           if (forceDownload) {
             _this5.download(baseHost + downloadUrl);
@@ -565,6 +564,16 @@ function (_BaseMapFishPrintMana) {
         });
       } else {
         serializedLayers = this.customMapParams.layers;
+      }
+
+      if (this.customParams.mergelayers) {
+        this.customParams.mergelayers.map(function (layer) {
+          var serializedLayer = _this8.serializeLayer(layer);
+
+          if (serializedLayer) {
+            serializedLayers.push(serializedLayer);
+          }
+        });
       }
 
       var serializedLegends;
@@ -715,20 +724,6 @@ function (_BaseMapFishPrintMana) {
       var _this9 = this;
 
       var r = new RegExp('^(?:[a-z]+:)?//', 'i');
-
-      if (layer.hasOwnProperty('getLayerLegend')) {
-        var l_url = layer.getLayerLegend(this.map.getView().getResolution());
-
-        if (!r.test(l_url)) {
-          l_url = this.host + l_url;
-        }
-
-        return {
-          name: layer.get('name'),
-          icons: [l_url]
-        };
-      }
-
       var legends = layer.get('legend');
 
       if (legends) {
@@ -749,15 +744,15 @@ function (_BaseMapFishPrintMana) {
             icons: legends
           };
         } else {
-          var _l_url = layer.get('legend');
+          var l_url = layer.get('legend');
 
-          if (!r.test(_l_url)) {
-            _l_url = this.host + _l_url;
+          if (!r.test(l_url)) {
+            l_url = this.host + l_url;
           }
 
           return {
             name: layer.get('name'),
-            icons: [_l_url]
+            icons: [l_url]
           };
         }
       }

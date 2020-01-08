@@ -315,7 +315,6 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
         return this.pollUntilDone.call(this, baseHost + statusURL, 1000, this.timeout)
           .then(downloadUrl => {
             this._printJobReference = null;
-            console.log('4');
             if (forceDownload) {
               this.download(baseHost + downloadUrl);
             } else {
@@ -435,6 +434,14 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
     }else{
       serializedLayers=this.customMapParams.layers;
     }
+    if(this.customParams.mergelayers){
+      this.customParams.mergelayers.map(layer=>{
+        const serializedLayer = this.serializeLayer(layer);
+        if (serializedLayer) {
+          serializedLayers.push(serializedLayer);
+        }
+      });
+    }
     let serializedLegends;
     if(!(this.customParams.legend && this.customParams.legend.classes)) {
       serializedLegends = mapLayers
@@ -449,6 +456,7 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
     }else{
       serializedLegends = this.customParams.legend.classes;
     }
+
 
     let customMapP=Object.assign({},this.customMapParams);
     delete customMapP.layers;
@@ -612,19 +620,6 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
    */
   serializeLegend(layer) {
     let r = new RegExp('^(?:[a-z]+:)?//', 'i');
-
-    if(layer.hasOwnProperty('getLayerLegend')){
-
-      let l_url=layer.getLayerLegend(this.map.getView().getResolution());
-      if (!(r.test(l_url))) {
-        l_url= this.host + l_url;
-      }
-      return {
-        name: layer.get('name'),
-        icons:[ l_url]
-      };
-    }
-
     let legends=layer.get('legend');
     if(legends){
       if(Array.isArray(legends)){
