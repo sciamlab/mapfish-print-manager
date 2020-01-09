@@ -106,7 +106,11 @@ export class MapFishPrintV3GeoJsonSerializer extends BaseSerializer {
         polyFeature.setStyle(style);
         feature = polyFeature;
       }
-      serializedFeature = format.writeFeatureObject(feature);
+
+      serializedFeature = format.writeFeatureObject(feature,{
+        dataProjection:'EPSG:3857',
+        featureProjection:'EPSG:4326'
+      });
 
       let styles;
       let styleFunction = feature.getStyleFunction();
@@ -152,7 +156,8 @@ export class MapFishPrintV3GeoJsonSerializer extends BaseSerializer {
       ...{
         geoJson: {
           type: 'FeatureCollection',
-          features: serializedFeatures
+          features: serializedFeatures,
+          style:layer.get('cstyle')?layer.get('cstyle'):{}
         },
         name: layer.get('name') || 'Vector Layer',
         opacity: layer.getOpacity(),

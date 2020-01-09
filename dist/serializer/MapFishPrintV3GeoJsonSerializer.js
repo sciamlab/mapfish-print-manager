@@ -376,7 +376,10 @@ function (_BaseSerializer) {
           feature = polyFeature;
         }
 
-        serializedFeature = format.writeFeatureObject(feature);
+        serializedFeature = format.writeFeatureObject(feature, {
+          dataProjection: 'EPSG:3857',
+          featureProjection: 'EPSG:4326'
+        });
         var styles;
         var styleFunction = feature.getStyleFunction();
 
@@ -421,7 +424,8 @@ function (_BaseSerializer) {
       var serialized = _objectSpread({}, _get(_getPrototypeOf(MapFishPrintV3GeoJsonSerializer.prototype), "serialize", this).call(this, layer, opts, viewResolution), {}, {
         geoJson: {
           type: 'FeatureCollection',
-          features: serializedFeatures
+          features: serializedFeatures,
+          style: layer.get('cstyle') ? layer.get('cstyle') : {}
         },
         name: layer.get('name') || 'Vector Layer',
         opacity: layer.getOpacity(),
