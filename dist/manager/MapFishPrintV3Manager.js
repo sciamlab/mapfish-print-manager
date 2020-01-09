@@ -694,7 +694,6 @@ function (_BaseMapFishPrintMana) {
   }, {
     key: "setLayout",
     value: function setLayout(name) {
-      console.log(this.getLayouts());
       var layout = this.getLayouts().find(function (layout) {
         return layout.name === name;
       });

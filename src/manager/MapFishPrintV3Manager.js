@@ -554,7 +554,6 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
    * @param {string} name The name of the layout to use.
    */
   setLayout(name) {
-    console.log(this.getLayouts());
     const layout = this.getLayouts().find(layout => layout.name === name);
 
     if (!layout) {
