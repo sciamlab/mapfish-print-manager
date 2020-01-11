@@ -45,6 +45,15 @@ _defineProperty(Shared, "getInteractionsByName", function (map, name) {
   });
 });
 
+_defineProperty(Shared, "removeInteractionsByName", function (map, name) {
+  var interactions = map.getInteractions().getArray();
+  return interactions.filter(function (interaction) {
+    return interaction.get('name') === name;
+  }).map(function (interaction) {
+    return map.removeInteraction(interaction);
+  });
+});
+
 _defineProperty(Shared, "getLayersByName", function (map, name) {
   var layers = Shared.getMapLayers(map);
   return layers.filter(function (layer) {

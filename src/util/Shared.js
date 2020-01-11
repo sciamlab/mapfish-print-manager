@@ -23,6 +23,18 @@ export class Shared {
   }
 
   /**
+   * Remove a map interactions by the given name.
+   *
+   * @param {ol.Map} map The map to get the interactions from.
+   * @param {string} name The name to filter with.
+   * @return {Array} The matching candidates.
+   */
+  static removeInteractionsByName = (map, name) => {
+    const interactions = map.getInteractions().getArray();
+    return (interactions.filter(interaction => interaction.get('name') === name)).map(interaction => map.removeInteraction(interaction));
+  }
+
+  /**
    * Returns all map layers with the given name.
    *
    * @param {ol.Map} map The map to get the layers from.

@@ -509,20 +509,24 @@ function (_Observable) {
   }, {
     key: "initTransformInteraction",
     value: function initTransformInteraction() {
-      if (_Shared["default"].getInteractionsByName(this.map, this.constructor.TRANSFORM_INTERACTION_NAME).length === 0) {
-        var transform = new _InteractionTransform["default"](_objectSpread({
-          features: [this._extentFeature],
-          translateFeature: true,
-          translate: true,
-          stretch: false,
-          scale: true,
-          rotate: true,
-          keepAspectRatio: true
-        }, this.transformOpts));
-        transform.set('name', this.constructor.TRANSFORM_INTERACTION_NAME);
-        transform.on('scaling', this.onTransformScaling.bind(this));
-        this.map.addInteraction(transform);
+      var extInteraction = _Shared["default"].getInteractionsByName(this.map, this.constructor.TRANSFORM_INTERACTION_NAME);
+
+      if (extInteraction && extInteraction.length > 0) {
+        _Shared["default"].removeInteractionsByName(this.map, this.constructor.TRANSFORM_INTERACTION_NAME);
       }
+
+      var transform = new _InteractionTransform["default"](_objectSpread({
+        features: [this._extentFeature],
+        translateFeature: true,
+        translate: true,
+        stretch: false,
+        scale: true,
+        rotate: true,
+        keepAspectRatio: true
+      }, this.transformOpts));
+      transform.set('name', this.constructor.TRANSFORM_INTERACTION_NAME);
+      transform.on('scaling', this.onTransformScaling.bind(this));
+      this.map.addInteraction(transform);
     }
     /**
      * Called on translate interaction's `scaling` event.

@@ -408,25 +408,29 @@ export class BaseMapFishPrintManager extends Observable {
    * Initializes the transform interaction.
    */
   initTransformInteraction() {
-    if (Shared.getInteractionsByName(this.map,
-      this.constructor.TRANSFORM_INTERACTION_NAME).length === 0) {
-      const transform = new OlInteractionTransform({
-        features: [this._extentFeature],
-        translateFeature: true,
-        translate: true,
-        stretch: false,
-        scale: true,
-        rotate: true,
-        keepAspectRatio: true,
-        ...this.transformOpts
-      });
 
-      transform.set('name', this.constructor.TRANSFORM_INTERACTION_NAME);
+    let extInteraction=Shared.getInteractionsByName(this.map,
+      this.constructor.TRANSFORM_INTERACTION_NAME);
 
-      transform.on('scaling', this.onTransformScaling.bind(this));
-
-      this.map.addInteraction(transform);
+    if (extInteraction && extInteraction.length > 0) {
+        Shared.removeInteractionsByName(this.map,
+          this.constructor.TRANSFORM_INTERACTION_NAME);
     }
+    const transform = new OlInteractionTransform({
+      features: [this._extentFeature],
+      translateFeature: true,
+      translate: true,
+      stretch: false,
+      scale: true,
+      rotate: true,
+      keepAspectRatio: true,
+      ...this.transformOpts
+    });
+
+    transform.set('name', this.constructor.TRANSFORM_INTERACTION_NAME);
+
+    transform.on('scaling', this.onTransformScaling.bind(this));
+    this.map.addInteraction(transform);
   }
 
   /**
