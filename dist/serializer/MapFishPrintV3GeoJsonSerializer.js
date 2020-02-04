@@ -431,7 +431,7 @@ function (_BaseSerializer) {
         opacity: layer.getOpacity(),
         // TODO Currently not supported, GeoStyler MapFish JSON StyleParser should
         // be used here!
-        style: {},
+        style: layer.get('cstyle') ? layer.get('cstyle') : {},
         type: this.constructor.TYPE_GEOJSON
       }, {}, opts);
 
