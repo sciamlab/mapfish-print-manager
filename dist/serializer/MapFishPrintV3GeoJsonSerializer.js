@@ -429,8 +429,9 @@ function (_BaseSerializer) {
       var serialized = _objectSpread({}, _get(_getPrototypeOf(MapFishPrintV3GeoJsonSerializer.prototype), "serialize", this).call(this, layer, opts, viewResolution), {}, {
         geoJson: {
           type: 'FeatureCollection',
-          features: serializedFeatures,
-          style: layer.get('cstyle') ? layer.get('cstyle') : {}
+          features: serializedFeatures
+          /*style:layer.get('cstyle')?layer.get('cstyle'):{}*/
+
         },
         name: layer.get('name') || 'Vector Layer',
         opacity: layer.getOpacity(),

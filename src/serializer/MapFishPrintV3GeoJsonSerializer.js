@@ -161,7 +161,7 @@ export class MapFishPrintV3GeoJsonSerializer extends BaseSerializer {
         geoJson: {
           type: 'FeatureCollection',
           features: serializedFeatures,
-          style:layer.get('cstyle')?layer.get('cstyle'):{}
+          /*style:layer.get('cstyle')?layer.get('cstyle'):{}*/
         },
         name: layer.get('name') || 'Vector Layer',
         opacity: layer.getOpacity(),
