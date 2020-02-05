@@ -590,7 +590,7 @@ function (_BaseMapFishPrintMana) {
         var sl = this.serializeLayer(this.customParams.extentLayer);
 
         if (sl) {
-          serializedLayers.push(sl);
+          serializedLayers.unshift(sl);
         }
 
         delete this.customParams.extentLayer;
