@@ -375,10 +375,15 @@ function (_BaseSerializer) {
           polyFeature.setStyle(style);
           feature = polyFeature;
         }
+        /*serializedFeature = format.writeFeatureObject(feature,{
+          dataProjection:'EPSG:3857',
+          featureProjection:'EPSG:4326'
+        });*/
+
 
         serializedFeature = format.writeFeatureObject(feature, {
           dataProjection: 'EPSG:3857',
-          featureProjection: 'EPSG:4326'
+          featureProjection: 'EPSG:3857'
         });
         var styles;
         var styleFunction = feature.getStyleFunction();

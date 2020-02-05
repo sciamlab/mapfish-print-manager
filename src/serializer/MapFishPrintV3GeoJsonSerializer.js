@@ -107,9 +107,13 @@ export class MapFishPrintV3GeoJsonSerializer extends BaseSerializer {
         feature = polyFeature;
       }
 
-      serializedFeature = format.writeFeatureObject(feature,{
+      /*serializedFeature = format.writeFeatureObject(feature,{
         dataProjection:'EPSG:3857',
         featureProjection:'EPSG:4326'
+      });*/
+      serializedFeature = format.writeFeatureObject(feature,{
+        dataProjection:'EPSG:3857',
+        featureProjection:'EPSG:3857'
       });
 
       let styles;
