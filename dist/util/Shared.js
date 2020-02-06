@@ -67,7 +67,7 @@ _defineProperty(Shared, "getMapLayers", function (collection) {
   layers.forEach(function (layer) {
     if (layer instanceof _Group["default"]) {
       Shared.getMapLayers(layer).forEach(function (l) {
-        mapLayers.push(l);
+        if (layer.getVisible()) mapLayers.push(l);
       });
     } else {
       mapLayers.push(layer);
