@@ -45,8 +45,8 @@ export class MapFishPrintV3OSMSerializer extends BaseSerializer {
    */
   serialize(layer, opts = {}) {
     defaultsDeep(opts, {
-      baseURL: 'http://tiles.wmflabs.org/bw-mapnik/',
-      /*baseURL: 'https://tile.openstreetmap.org/',*/
+      /*baseURL: 'http://tiles.wmflabs.org/bw-mapnik/',*/
+      baseURL: 'https://tile.openstreetmap.org/',
       /*baseURL: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',*/
       customParams: {},
 /*      dpi: 72,*/

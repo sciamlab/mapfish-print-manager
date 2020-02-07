@@ -87,9 +87,8 @@ function (_BaseSerializer) {
     value: function serialize(layer) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       (0, _defaultsDeep["default"])(opts, {
-        baseURL: 'http://tiles.wmflabs.org/bw-mapnik/',
-
-        /*baseURL: 'https://tile.openstreetmap.org/',*/
+        /*baseURL: 'http://tiles.wmflabs.org/bw-mapnik/',*/
+        baseURL: 'https://tile.openstreetmap.org/',
 
         /*baseURL: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',*/
         customParams: {},
