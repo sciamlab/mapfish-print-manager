@@ -742,7 +742,7 @@ function (_BaseMapFishPrintMana) {
       var _this9 = this;
 
       var r = new RegExp('^(?:[a-z]+:)?//', 'i');
-      var assets = new RegExp('^(assets)?\/', 'i');
+      var assets = new RegExp('^\/geoserver\/', 'i');
       var legends = layer.get('legend');
 
       if (legends) {
@@ -751,9 +751,9 @@ function (_BaseMapFishPrintMana) {
             if (leg.url) {
               if (!r.test(leg.url)) {
                 if (assets.test(leg.url)) {
-                  leg.url = document.baseURI + leg.url;
-                } else {
                   leg.url = _this9.host + leg.url;
+                } else {
+                  leg.url = document.baseURI + leg.url;
                 }
               }
 
@@ -771,9 +771,9 @@ function (_BaseMapFishPrintMana) {
 
           if (!r.test(l_url)) {
             if (assets.test(l_url.url)) {
-              l_url = document.baseURI + l_url;
-            } else {
               l_url = this.host + l_url;
+            } else {
+              l_url = document.baseURI + l_url;
             }
           }
 
