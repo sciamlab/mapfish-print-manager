@@ -742,6 +742,7 @@ function (_BaseMapFishPrintMana) {
       var _this9 = this;
 
       var r = new RegExp('^(?:[a-z]+:)?//', 'i');
+      var assets = new RegExp('^(assets)?\/', 'i');
       var legends = layer.get('legend');
 
       if (legends) {
@@ -749,7 +750,11 @@ function (_BaseMapFishPrintMana) {
           legends = legends.reduce(function (acc, leg) {
             if (leg.url) {
               if (!r.test(leg.url)) {
-                leg.url = _this9.host + leg.url;
+                if (assets.test(leg.url)) {
+                  leg.url = document.baseURI + leg.url;
+                } else {
+                  leg.url = _this9.host + leg.url;
+                }
               }
 
               acc.push(leg.url);
@@ -765,7 +770,11 @@ function (_BaseMapFishPrintMana) {
           var l_url = layer.get('legend');
 
           if (!r.test(l_url)) {
-            l_url = this.host + l_url;
+            if (assets.test(leg.url)) {
+              l_url = document.baseURI + l_url;
+            } else {
+              l_url = this.host + l_url;
+            }
           }
 
           return {

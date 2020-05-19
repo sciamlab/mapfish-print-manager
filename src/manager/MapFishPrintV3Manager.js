@@ -638,13 +638,18 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
    */
   serializeLegend(layer) {
     let r = new RegExp('^(?:[a-z]+:)?//', 'i');
+    let assets = new RegExp('^(assets)?\/', 'i');
     let legends=layer.get('legend');
     if(legends){
       if(Array.isArray(legends)){
         legends=legends.reduce((acc, leg) => {
           if (leg.url) {
             if (!(r.test(leg.url))) {
-              leg.url= this.host + leg.url;
+              if(assets.test(leg.url)){
+                leg.url= document.baseURI + leg.url;
+              }else{
+                leg.url= this.host + leg.url;
+              }
             }
             acc.push(leg.url);
           }
@@ -657,7 +662,12 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
       }else{
         let l_url=layer.get('legend');
         if (!(r.test(l_url))) {
-          l_url= this.host + l_url;
+          if(assets.test(leg.url)){
+            l_url= document.baseURI + l_url;
+          }else{
+            l_url= this.host + l_url;
+          }
+
         }
         return {
           name: layer.get('name'),
