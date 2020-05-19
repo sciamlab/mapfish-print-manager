@@ -770,7 +770,7 @@ function (_BaseMapFishPrintMana) {
           var l_url = layer.get('legend');
 
           if (!r.test(l_url)) {
-            if (assets.test(leg.url)) {
+            if (assets.test(l_url.url)) {
               l_url = document.baseURI + l_url;
             } else {
               l_url = this.host + l_url;
