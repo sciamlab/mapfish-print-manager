@@ -324,7 +324,7 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
           })
           .catch(error => {
             this._printJobReference = null;
-            throw new TypeError("Timeout occurred");
+            throw new TypeError(error);
             /*Logger.error(error);*/
           });
       })
