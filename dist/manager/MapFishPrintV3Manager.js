@@ -436,7 +436,7 @@ function (_BaseMapFishPrintMana) {
           }
         })["catch"](function (error) {
           _this5._printJobReference = null;
-          return Promise.reject("".concat(error.message));
+          throw new TypeError("Timeout occurred");
           /*Logger.error(error);*/
         });
       })["catch"](function (error) {
