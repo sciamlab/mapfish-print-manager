@@ -436,8 +436,8 @@ function (_BaseMapFishPrintMana) {
           }
         })["catch"](function (error) {
           _this5._printJobReference = null;
-
-          _Logger["default"].error(error);
+          return Promise.reject("".concat(error.message));
+          /*Logger.error(error);*/
         });
       })["catch"](function (error) {
         return Promise.reject("Error while creating the print job: ".concat(error.message));

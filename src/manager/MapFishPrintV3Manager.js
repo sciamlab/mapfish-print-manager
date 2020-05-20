@@ -324,7 +324,8 @@ export class MapFishPrintV3Manager extends BaseMapFishPrintManager {
           })
           .catch(error => {
             this._printJobReference = null;
-            Logger.error(error);
+            return Promise.reject(`${error.message}`);
+            /*Logger.error(error);*/
           });
       })
       .catch(error => Promise.reject(`Error while creating the print job: ${error.message}`));
